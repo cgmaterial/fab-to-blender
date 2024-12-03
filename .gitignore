@@ -1,0 +1,14 @@
+__pycache__
+__pycache__/
+__pycache__/*
+*~
+*.pyc
+*.*swp
+env.set
+*.autosave
+*.lock
+*.idea
+*.idea/
+*.idea/*
+.idea/workspace.xml
+
