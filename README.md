@@ -14,3 +14,8 @@
 
 - Run script as follows: 
 path_to_blender_executable -b --factory-startup -P main.py -- "path_to_asset_folder"
+
+### Video overview
+
+https://youtu.be/ItT8N-OdHpQ
+
