@@ -164,11 +164,17 @@ def process_assets(base_path):
 
     for file_name in os.listdir(base_path):
         if file_name.endswith(".zip"):
+            zip_path = os.path.join(base_path, file_name)
             asset_name = os.path.splitext(file_name)[0]
             extract_path = os.path.join(unzipped_assets_dir, asset_name)
 
+            # Check if the asset is already unzipped
+            if os.path.exists(extract_path) and os.listdir(extract_path):
+                print(f"Asset '{asset_name}' is already unzipped. Skipping extraction.")
+                continue
+
             try:
-                with zipfile.ZipFile(os.path.join(base_path, file_name), 'r') as zip_ref:
+                with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                     zip_ref.extractall(extract_path)
                 logging.info(f"Extracted {file_name} to {extract_path}")
             except zipfile.BadZipFile:
