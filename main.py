@@ -5,7 +5,14 @@ import sys
 import uuid
 import zipfile
 import logging
+import subprocess
 
+try:
+    import PIL
+except ModuleNotFoundError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "pillow"])
+
+from PIL import Image
 
 def setup_logger():
     """Sets up a logger for the script."""
@@ -53,6 +60,21 @@ def find_json_file(folder_path, search_term):
         if file_name.endswith(".json") and file_name.strip(".json").lower() in search_term.lower():
             return os.path.join(folder_path, file_name)
     return None
+
+
+def crop_thumbnails(image_path):
+    if image_path:
+        image = Image.open(f"{image_path}")
+        # Get the original dimensions
+        width, height = image.size
+        new_width = height
+        top = 0
+        bottom = height
+        left = (width - new_width) // 2
+        right = left + new_width
+        # Crop the image
+        cropped_image = image.crop((left, top, right, bottom))
+        cropped_image.save(f"{image_path}")
 
 
 def import_gltf_and_process(gltf_path, asset_name, blend_file_path, catalog_id=None, preview_image_path=None, catalog_file=None):
@@ -194,6 +216,9 @@ def process_assets(base_path):
                     preview_image_path = os.path.join(base_path, f"{asset_name}.jpg")
                     if not os.path.exists(preview_image_path):
                         preview_image_path = None
+
+                    if not "3D" in asset_type:
+                        crop_thumbnails(preview_image_path)
 
                     import_gltf_and_process(
                         gltf_path, asset_name, blend_file_path, catalog_id=asset_type, preview_image_path=preview_image_path, catalog_file=catalog_file
